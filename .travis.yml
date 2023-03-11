@@ -1,0 +1,16 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t aleh/react-test -f ./client/dockerfile.dev ./client
+
+script:
+  - docker run aleh/react-test npm test -e CI=true
+
+after_success:
+  - docker build -t aleh/multi-client ./client
+  - docker build -t aleh/multi-nginx ./nginx
+  - docker build -t aleh/multi-server ./server
+  - docker build -t aleh/multi-worker ./worker
